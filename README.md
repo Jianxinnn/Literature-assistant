@@ -1,16 +1,42 @@
 # Literature Assistant - Standalone
 
-AI-powered scientific literature analysis assistant. Upload PDF papers and get intelligent analysis, summaries, and Q&A capabilities.
+AI-powered scientific literature analysis assistant with comprehensive library management, community sharing, and multi-modal PDF parsing capabilities.
 
 ## Features
 
-- PDF literature upload and parsing
-- Multiple AI models support (Gemini, GPT, DeepSeek, etc.)
-- Real-time streaming responses
-- Multiple analysis modes (quick summary, deep dive, critique, etc.)
-- Session management
-- Google OAuth authentication
-- Community sharing (optional)
+### Core Features
+- **PDF Upload & Parsing** - Upload PDF papers with automatic text extraction
+- **Multi-Model AI Analysis** - Support for 19+ LLM providers (Gemini, GPT, DeepSeek, Kimi, Claude, etc.)
+- **Real-time Streaming** - Live streaming responses with heartbeat mechanism
+- **Multiple Analysis Modes** - Deep dive, quick summary, multi-PDF comparison, image report, critique
+- **Custom Prompts** - Create and manage your own analysis prompts
+
+### Library Management
+- **Folder System** - Organize papers into custom folders (Want to read, Reading, Completed, etc.)
+- **File Preview** - Quick preview panel with expandable view
+- **Grid/List View** - Toggle between different view modes
+- **Search** - Search across your library
+- **Batch Operations** - Manage multiple documents
+
+### Community Sharing
+- **Public Sessions** - Share your analysis with others
+- **Discover** - Browse public literature analyses
+- **Copy/Fork** - Copy public sessions to your library
+- **View/Copy Counts** - Track engagement metrics
+
+### Advanced Features
+- **MinerU Integration** - High-quality PDF parsing with figure extraction (图文解析)
+- **Figure-Aware Markdown** - Render figures inline with AI responses
+- **URL Import** - Direct import from arXiv, OpenReview, Nature
+- **Notes** - Add personal notes to sessions
+- **Message Editing** - Edit and resend messages
+- **Multi-format Download** - Download as Markdown, PDF, or MinerU format
+- **Theme Toggle** - Light/Dark mode support
+- **Drag & Drop** - Drag files to upload
+
+### Authentication
+- **Google OAuth 2.0** - Secure authentication
+- **JWT Tokens** - Stateless API authentication
 
 ## Quick Start
 
@@ -20,319 +46,273 @@ AI-powered scientific literature analysis assistant. Upload PDF papers and get i
 - npm or yarn
 - Google Cloud project (for OAuth)
 
-### Local Development
-
-#### Step 1: 安装依赖
+### Installation
 
 ```bash
 cd literature-assistant-standalone
-npm run setup    # 这会安装 root、backend、frontend 三个目录的依赖
+npm run setup    # Install dependencies for root, backend, and frontend
 ```
 
-#### Step 2: 配置环境变量
+### Configuration
+
+#### Step 1: Environment Variables
 
 ```bash
 cp .env.example .env
 ```
 
-编辑 `.env` 文件（见下方 Google OAuth 配置说明）。
-
-#### Step 3: 配置 Google OAuth（详细步骤）
-
-**3.1 创建 Google Cloud 项目**
-
-1. 打开 [Google Cloud Console](https://console.cloud.google.com)
-2. 点击顶部项目选择器 → **New Project**
-3. 项目名称随意填写，如 `literature-assistant`
-4. 点击 **Create**
-
-**3.2 配置 OAuth 同意屏幕**
-
-1. 左侧菜单：**APIs & Services** → **OAuth consent screen**
-2. User Type 选择 **External** → **Create**
-3. 填写必填项：
-   - App name: `Literature Assistant`
-   - User support email: 你的邮箱
-   - Developer contact: 你的邮箱
-4. 点击 **Save and Continue** 跳过 Scopes 和 Test users
-5. 回到 Summary 点击 **Back to Dashboard**
-
-**3.3 创建 OAuth 凭据**
-
-1. 左侧菜单：**APIs & Services** → **Credentials**
-2. 点击 **+ Create Credentials** → **OAuth client ID**
-3. Application type: **Web application**
-4. Name: `Literature Assistant Local`
-5. **Authorized JavaScript origins** 添加：
-   - `http://localhost:3000`
-   - `http://localhost:5173`
-6. **Authorized redirect URIs** 添加：
-   - `http://localhost:3000/api/auth/google/callback`
-7. 点击 **Create**
-8. 复制 **Client ID** 和 **Client Secret**
-
-**3.4 更新 .env 文件**
+Edit `.env` with your configuration:
 
 ```bash
-# Google OAuth
-GOOGLE_CLIENT_ID=你复制的Client_ID
-GOOGLE_CLIENT_SECRET=你复制的Client_Secret
+# ==================== Authentication ====================
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 GOOGLE_CALLBACK_URL=http://localhost:3000/api/auth/google/callback
 
-# JWT & Session (随便填一个长字符串)
-JWT_SECRET=my-super-secret-jwt-key-12345
-SESSION_SECRET=my-super-secret-session-key-12345
+JWT_SECRET=your-random-jwt-secret-32-chars-minimum
+SESSION_SECRET=your-random-session-secret-32-chars-minimum
 
-# 前端地址
 FRONTEND_URL=http://localhost:5173
+
+# ==================== LLM Providers ====================
+# Option 1: JXTANG API Gateway (supports multiple models)
+JXTANG_BASE_URL=https://your-api-gateway/v1/chat/completions
+JXTANG_API_KEY=your-api-key
+
+# Option 2: Direct Provider APIs
+GEMINI_API_KEY=your-gemini-api-key
+OPENAI_API_KEY=your-openai-api-key
+DEEPSEEK_API_KEY=your-deepseek-api-key
+
+# ==================== Optional Services ====================
+# MinerU - PDF image extraction (图文解析)
+MINERU_API_TOKEN=your-mineru-token
+
+# DNS servers for MinerU CDN (optional)
+DNS_SERVERS=8.8.8.8,1.1.1.1,114.114.114.114
 ```
 
-#### Step 4: 配置 LLM Provider
+#### Step 2: Configure Google OAuth
 
-至少配置一个 LLM API Key：
+1. Go to [Google Cloud Console](https://console.cloud.google.com)
+2. Create a new project or select existing
+3. Navigate to **APIs & Services** → **OAuth consent screen**
+   - User Type: External
+   - Fill required fields (App name, emails)
+4. Navigate to **APIs & Services** → **Credentials**
+   - Click **+ Create Credentials** → **OAuth client ID**
+   - Application type: Web application
+   - Authorized JavaScript origins: `http://localhost:3000`, `http://localhost:5173`
+   - Authorized redirect URIs: `http://localhost:3000/api/auth/google/callback`
+5. Copy Client ID and Client Secret to `.env`
 
-```bash
-# Gemini (推荐，免费额度大)
-GEMINI_API_KEY=你的API密钥
+#### Step 3: Configure LLM Providers
 
-# 或 OpenAI
-OPENAI_API_KEY=你的API密钥
+Edit `backend/config/llm-providers.json` to enable/disable providers:
 
-# 或 DeepSeek
-DEEPSEEK_API_KEY=你的API密钥
+```json
+{
+  "defaultProvider": "gemini-3-pro-preview",
+  "providers": {
+    "gemini-3-pro-preview": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "gemini-3-pro-preview",
+      "maxTokens": 32000,
+      "multimodal": true,
+      "enabled": true
+    }
+  }
+}
 ```
 
-#### Step 5: 启动开发服务器
+### Start Development Server
 
 ```bash
 npm run dev
 ```
 
-- 前端: http://localhost:5173
-- 后端: http://localhost:3000
-
-#### 常见问题
-
-**Q: `concurrently: not found`**
-```bash
-npm install   # 在根目录安装依赖
-```
-
-**Q: `Cannot find module 'xxx'`**
-```bash
-npm run setup   # 重新安装所有依赖
-```
-
-**Q: Google 登录报错 `redirect_uri_mismatch`**
-- 检查 Google Console 中的 redirect URI 是否完全匹配 `http://localhost:3000/api/auth/google/callback`
-- 注意是 http 不是 https，端口是 3000 不是 5173
+- Frontend: http://localhost:5173
+- Backend: http://localhost:3000
 
 ## Production Deployment
 
 ### Using Docker
 
 ```bash
-# Build and run
 docker-compose up -d
-
-# View logs
 docker-compose logs -f
 ```
 
 ### Manual Deployment
 
 ```bash
-# Build frontend
 npm run build
-
-# Start production server
 NODE_ENV=production npm start
 ```
 
 ### Deploy to Zeabur
 
-Zeabur 是一个简单的云部署平台，支持自动从 GitHub 部署。
+1. Push code to GitHub
+2. Create project on [Zeabur](https://zeabur.com)
+3. Configure environment variables (change URLs to production domain)
+4. Add production redirect URI to Google OAuth
+5. Add Persistent Storage for `/app/data`
 
-#### 本地开发 vs Zeabur 部署配置对比
+## Architecture
 
-| 配置项 | 本地开发 | Zeabur 生产环境 |
-|--------|---------|----------------|
-| `NODE_ENV` | `development` | `production` |
-| `GOOGLE_CALLBACK_URL` | `http://localhost:3000/api/auth/google/callback` | `https://你的域名/api/auth/google/callback` |
-| `FRONTEND_URL` | `http://localhost:5173` | `https://你的域名` |
-| Google OAuth 重定向 URI | `http://localhost:3000/...` | 需要在 Google Console 添加生产域名 |
-
-**核心区别：只需要改 3 个地方：**
-1. `GOOGLE_CALLBACK_URL` - 改成 Zeabur 分配的域名
-2. `FRONTEND_URL` - 改成 Zeabur 分配的域名
-3. Google Cloud Console - 添加新的授权重定向 URI
-
-#### 部署步骤
-
-**Step 1: 推送代码到 GitHub**
-
-```bash
-cd literature-assistant-standalone
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin https://github.com/你的用户名/literature-assistant-standalone.git
-git push -u origin main
+```
+literature-assistant-standalone/
+├── frontend/                    # React + Vite + TypeScript
+│   ├── src/
+│   │   ├── pages/
+│   │   │   └── LiteratureAssistant.tsx  # Main page (5600+ lines)
+│   │   ├── components/
+│   │   │   ├── ui/              # shadcn/ui components
+│   │   │   ├── layout/          # Layout components
+│   │   │   ├── literature-assistant/
+│   │   │   │   └── FigureAwareMarkdown.tsx
+│   │   │   └── MermaidChart.tsx
+│   │   ├── stores/
+│   │   │   └── literature-assistant-store.ts
+│   │   ├── services/
+│   │   │   ├── api.ts           # API client
+│   │   │   └── auth.ts          # Auth service
+│   │   └── hooks/
+│   │       └── useTheme.ts      # Theme hook
+│   └── ...
+├── backend/                     # Express + SQLite
+│   ├── api/
+│   │   ├── auth-routes.js       # OAuth routes
+│   │   ├── session-routes.js    # Session CRUD
+│   │   ├── document-routes.js   # Document & figure routes
+│   │   └── analysis-routes.js   # AI analysis, downloads, community
+│   ├── lib/
+│   │   ├── database.js          # SQLite wrapper
+│   │   └── mineru-service.js    # MinerU integration
+│   ├── middleware/
+│   │   └── auth.js              # JWT middleware
+│   └── config/
+│       ├── llm-providers.json   # LLM configuration
+│       └── prompts.json         # Analysis prompts
+├── data/                        # Data directory
+│   ├── database/                # SQLite database
+│   ├── uploads/                 # PDF files
+│   └── figures/                 # Extracted images
+└── docker/                      # Docker configs
 ```
 
-**Step 2: 在 Zeabur 创建项目**
+## API Endpoints
 
-1. 访问 https://zeabur.com 并登录（支持 GitHub 登录）
-2. 点击 **"New Project"**
-3. 选择 **"Deploy from GitHub"**
-4. 授权并选择你的仓库
+### Authentication
+- `GET /api/auth/google` - Initiate OAuth
+- `GET /api/auth/google/callback` - OAuth callback
+- `GET /api/auth/me` - Get current user
+- `POST /api/auth/logout` - Logout
 
-**Step 3: 配置环境变量**
+### Sessions
+- `GET /api/sessions` - List sessions
+- `GET /api/sessions/:id` - Get session with documents & messages
+- `POST /api/sessions` - Create session
+- `PATCH /api/sessions/:id` - Update session
+- `DELETE /api/sessions/:id` - Delete session
+- `PATCH /api/sessions/:id/public` - Toggle public status
 
-在 Zeabur 项目的 **Variables** 页面添加：
+### Documents
+- `POST /api/documents` - Upload document
+- `GET /api/documents/:id` - Download document
+- `DELETE /api/documents/:id` - Delete document
+- `POST /api/documents/:id/parse-images` - Trigger MinerU parsing
+- `GET /api/documents/:id/figures` - Get document figures
+- `GET /api/documents/:id/figures/by-label/:label` - Get figure by label
 
-```bash
-# 必须配置
-NODE_ENV=production
-JWT_SECRET=你的随机密钥32位以上
-SESSION_SECRET=你的随机密钥32位以上
-GOOGLE_CLIENT_ID=你的Google客户端ID
-GOOGLE_CLIENT_SECRET=你的Google客户端密钥
-GOOGLE_CALLBACK_URL=https://你的zeabur域名/api/auth/google/callback
+### Analysis
+- `POST /api/analyze` - Stream AI analysis
+- `DELETE /api/messages/:id` - Delete message
+- `POST /api/upload-from-url` - Import from URL (arXiv, OpenReview, Nature)
 
-# LLM API Key（至少配置一个）
-GEMINI_API_KEY=你的API密钥
+### Downloads
+- `GET /api/download/availability/:sessionId` - Check download options
+- `GET /api/download/ai-response/:messageId` - Download as Markdown
+- `GET /api/download/original-pdf/:documentId` - Download original PDF
+- `GET /api/download/mineru-markdown/:documentId` - Download MinerU Markdown
+- `GET /api/download/mineru-folder/:documentId` - Download MinerU ZIP
 
-# 可选
-OPENAI_API_KEY=
-DEEPSEEK_API_KEY=
-MINERU_API_TOKEN=
-```
+### Community
+- `GET /api/community/sessions` - List public sessions
+- `POST /api/community/copy/:sessionId` - Copy public session
+- `POST /api/community/view/:sessionId` - Record view
+- `GET /api/community/settings` - Get share settings
+- `POST /api/community/settings` - Update share settings
 
-生成随机密钥：
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
+### Custom Prompts
+- `GET /api/custom-prompts` - List custom prompts
+- `POST /api/custom-prompts` - Create custom prompt
+- `DELETE /api/custom-prompts/:id` - Delete custom prompt
 
-**Step 4: 配置域名**
-
-1. 在 Zeabur 服务页面点击 **"Domains"**
-2. 点击 **"Generate Domain"** 获取免费域名（如 `xxx.zeabur.app`）
-3. 复制这个域名用于下一步
-
-**Step 5: 更新 Google OAuth 设置**
-
-1. 打开 [Google Cloud Console](https://console.cloud.google.com)
-2. 进入 **APIs & Services** > **Credentials**
-3. 编辑你的 OAuth 2.0 Client
-4. 在 **Authorized redirect URIs** 添加：
-   - `https://你的zeabur域名/api/auth/google/callback`
-5. 保存
-
-**Step 6: 触发部署**
-
-- 推送代码到 GitHub 会自动触发部署
-- 或在 Zeabur 控制台手动点击 **"Redeploy"**
-
-#### 更新代码后重新部署
-
-```bash
-# 修改代码后
-git add .
-git commit -m "你的修改说明"
-git push
-
-# Zeabur 会自动检测并重新部署，无需其他操作
-```
-
-#### 添加持久化存储（推荐）
-
-默认情况下，Zeabur 服务重启会丢失 SQLite 数据。添加持久化存储：
-
-1. 在项目中点击 **"Add Service"**
-2. 选择 **"Persistent Storage"**
-3. 挂载路径设为 `/app/data`
-
-#### 常见问题
-
-**Q: 部署失败怎么办？**
-- 查看 Zeabur 的 Logs 页面获取错误信息
-- 确认所有必需的环境变量都已配置
-- 确认 GitHub 仓库是最新的
-
-**Q: Google 登录提示 redirect_uri_mismatch？**
-- 确认 `GOOGLE_CALLBACK_URL` 环境变量与 Google Console 中配置的完全一致
-- 注意 https vs http，域名大小写
-
-**Q: 上传的 PDF 文件丢失？**
-- 需要添加 Persistent Storage 服务
-- 或考虑使用对象存储（如 S3）
-
-## Configuration
-
-### Environment Variables
+## Environment Variables
 
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `GOOGLE_CLIENT_ID` | Google OAuth Client ID | Yes |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret | Yes |
 | `GOOGLE_CALLBACK_URL` | OAuth callback URL | Yes |
-| `JWT_SECRET` | Secret for JWT tokens | Yes |
-| `SESSION_SECRET` | Secret for sessions | Yes |
-| `GEMINI_API_KEY` | Gemini API key | At least one LLM |
-| `OPENAI_API_KEY` | OpenAI API key | Optional |
-| `DEEPSEEK_API_KEY` | DeepSeek API key | Optional |
-| `MINERU_API_TOKEN` | MinerU token for PDF parsing | Optional |
+| `JWT_SECRET` | Secret for JWT tokens (32+ chars) | Yes |
+| `SESSION_SECRET` | Secret for sessions (32+ chars) | Yes |
+| `FRONTEND_URL` | Frontend URL for CORS | Yes |
+| `JXTANG_BASE_URL` | API gateway base URL | At least one LLM |
+| `JXTANG_API_KEY` | API gateway key | At least one LLM |
+| `GEMINI_API_KEY` | Direct Gemini API key | Optional |
+| `OPENAI_API_KEY` | Direct OpenAI API key | Optional |
+| `DEEPSEEK_API_KEY` | Direct DeepSeek API key | Optional |
+| `MINERU_API_TOKEN` | MinerU token for image parsing | Optional |
+| `DNS_SERVERS` | DNS servers for MinerU CDN | Optional |
 
-### LLM Providers
+## Tech Stack
 
-Edit `backend/config/llm-providers.json` to configure available LLM providers.
+### Frontend
+- React 18 + TypeScript
+- Vite
+- Zustand (state management)
+- Tailwind CSS + shadcn/ui
+- Framer Motion (animations)
+- React Markdown + KaTeX + Mermaid
+- Recharts (analytics)
 
-### Analysis Prompts
+### Backend
+- Express 5
+- SQLite3
+- Passport.js (Google OAuth)
+- JWT authentication
+- pdf-parse (text extraction)
+- MinerU API (image extraction)
+- Sharp (image processing)
 
-Edit `backend/config/prompts.json` to customize analysis prompts.
+## Troubleshooting
 
-## Architecture
-
+### `concurrently: not found`
+```bash
+npm install   # In root directory
 ```
-literature-assistant-standalone/
-├── frontend/           # React + Vite + TypeScript
-│   ├── src/
-│   │   ├── pages/      # Main pages
-│   │   ├── components/ # UI components
-│   │   ├── stores/     # Zustand state
-│   │   └── services/   # API client
-│   └── ...
-├── backend/            # Express + SQLite
-│   ├── api/            # Route handlers
-│   ├── lib/            # Database, utilities
-│   ├── middleware/     # Auth middleware
-│   └── config/         # LLM & prompt configs
-├── data/               # Data directory
-│   ├── database/       # SQLite DB
-│   ├── uploads/        # PDF files
-│   └── figures/        # Parsed images
-└── docker/             # Docker configs
+
+### `Cannot find module 'xxx'`
+```bash
+npm run setup   # Reinstall all dependencies
 ```
 
-## Development
+### Google OAuth `redirect_uri_mismatch`
+- Verify redirect URI in Google Console matches exactly
+- Check http vs https, correct port (3000 not 5173)
 
-### Tech Stack
+### MinerU parsing fails
+- Verify `MINERU_API_TOKEN` is set
+- Check network connectivity to mineru.net
+- Try configuring `DNS_SERVERS` if CDN is blocked
 
-- **Frontend**: React 18, TypeScript, Vite, Zustand, Tailwind CSS, shadcn/ui
-- **Backend**: Express 5, SQLite3, Passport.js
-- **Auth**: Google OAuth 2.0 + JWT
-- **PDF**: pdf-parse (text), MinerU (images, optional)
-
-### Adding a New LLM Provider
-
-1. Add configuration to `backend/config/llm-providers.json`
-2. Set the API key in `.env`
-3. Restart the server
-
-### Customizing Analysis Types
-
-Edit `backend/config/prompts.json` to add or modify analysis types.
+### PDF upload fails
+- Check file size (max 150MB)
+- Ensure `data/uploads` directory is writable
 
 ## License
 

@@ -126,6 +126,37 @@ export interface CustomPrompt {
   created_at: number;
 }
 
+export interface AdminStats {
+  overview: {
+    totalUsers: number;
+    activeUsers: number;
+    totalSessions: number;
+    totalDocuments: number;
+    totalMessages: number;
+    totalStorage: number;
+    storageUsed: number;
+    maxStorage: number;
+    apiUsage: number;
+    maxApiUsage: number;
+  };
+  activityTrend: Array<{
+    date: string;
+    count: number;
+    sessions?: number;
+    documents?: number;
+    apiCalls?: number;
+  }>;
+  userStats: Array<{
+    user_id: string;
+    name?: string;
+    email?: string;
+    session_count: number;
+    message_count: number;
+    document_count: number;
+    last_active: number;
+  }>;
+}
+
 function getAuthToken(): string | null {
   return localStorage.getItem('auth_token');
 }
@@ -444,6 +475,72 @@ class LiteratureAssistantAPI {
 
   async recordView(sessionId: string): Promise<void> {
     await this.api.post(`/community/view/${sessionId}`);
+  }
+
+  // Download availability and download methods
+  async getDownloadAvailability(sessionId: string): Promise<{
+    availability: {
+      aiResponseMd: boolean;
+      originalPdf: boolean;
+      mineruMarkdown: boolean;
+      mineruFolder: boolean;
+    };
+    documents: Array<{
+      id: string;
+      name: string;
+      hasMineruParsed: boolean;
+    }>;
+    latestMessageId: string | null;
+  }> {
+    const response = await this.api.get(`/download/availability/${sessionId}`);
+    return response.data;
+  }
+
+  private triggerDownload(blob: Blob, filename: string) {
+    const url = URL.createObjectURL(blob);
+    try {
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } finally {
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+  }
+
+  async downloadAiResponseMd(messageId: string, filename?: string): Promise<void> {
+    const response = await this.api.get(`/download/ai-response/${messageId}`, {
+      responseType: 'blob'
+    });
+    this.triggerDownload(response.data, filename || `ai-response-${messageId}.md`);
+  }
+
+  async downloadOriginalPdf(documentId: string, filename?: string): Promise<void> {
+    const response = await this.api.get(`/download/original-pdf/${documentId}`, {
+      responseType: 'blob'
+    });
+    this.triggerDownload(response.data, filename || `document-${documentId}.pdf`);
+  }
+
+  async downloadMineruMarkdown(documentId: string, filename?: string): Promise<void> {
+    const response = await this.api.get(`/download/mineru-markdown/${documentId}`, {
+      responseType: 'blob'
+    });
+    this.triggerDownload(response.data, filename || `mineru-${documentId}.md`);
+  }
+
+  async downloadMineruFolder(documentId: string, filename?: string): Promise<void> {
+    const response = await this.api.get(`/download/mineru-folder/${documentId}`, {
+      responseType: 'blob'
+    });
+    this.triggerDownload(response.data, filename || `mineru-${documentId}.zip`);
+  }
+
+  async getAdminStats(): Promise<AdminStats> {
+    const response = await this.api.get('/admin/stats');
+    return response.data;
   }
 }
 

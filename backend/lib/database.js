@@ -41,9 +41,17 @@ db.serialize(() => {
       status TEXT DEFAULT 'active',
       is_public INTEGER DEFAULT 0,
       copy_count INTEGER DEFAULT 0,
+      view_count INTEGER DEFAULT 0,
+      analysis_status TEXT DEFAULT 'idle',
       FOREIGN KEY (user_id) REFERENCES users(id)
     )
   `);
+
+  // Add view_count column if not exists
+  db.run(`ALTER TABLE sessions ADD COLUMN view_count INTEGER DEFAULT 0`, () => {});
+
+  // Add analysis_status column if not exists
+  db.run(`ALTER TABLE sessions ADD COLUMN analysis_status TEXT DEFAULT 'idle'`, () => {});
 
   // Messages table
   db.run(`
@@ -90,10 +98,16 @@ db.serialize(() => {
       file_name TEXT NOT NULL,
       file_path TEXT NOT NULL,
       file_size INTEGER,
+      width INTEGER,
+      height INTEGER,
       created_at INTEGER NOT NULL,
       FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE
     )
   `);
+
+  // Add width and height columns if not exists
+  db.run(`ALTER TABLE document_figures ADD COLUMN width INTEGER`, () => {});
+  db.run(`ALTER TABLE document_figures ADD COLUMN height INTEGER`, () => {});
 
   // Custom prompts table
   db.run(`
@@ -348,6 +362,69 @@ async function toggleSessionPublic(sessionId, isPublic) {
   await dbRun('UPDATE sessions SET is_public = ? WHERE id = ?', [isPublic ? 1 : 0, sessionId]);
 }
 
+async function incrementViewCount(sessionId) {
+  await dbRun('UPDATE sessions SET view_count = COALESCE(view_count, 0) + 1 WHERE id = ?', [sessionId]);
+}
+
+async function incrementCopyCount(sessionId) {
+  await dbRun('UPDATE sessions SET copy_count = COALESCE(copy_count, 0) + 1 WHERE id = ?', [sessionId]);
+}
+
+async function updateAnalysisStatus(sessionId, status) {
+  await dbRun('UPDATE sessions SET analysis_status = ?, updated_at = ? WHERE id = ?', [status, Date.now(), sessionId]);
+}
+
+async function getDocumentFigures(documentId) {
+  return await dbAll('SELECT * FROM document_figures WHERE document_id = ? ORDER BY page_number, image_index', [documentId]);
+}
+
+async function getFigure(figureId) {
+  return await dbGet('SELECT * FROM document_figures WHERE id = ?', [figureId]);
+}
+
+async function getFigureByLabel(documentId, label) {
+  // Support both F1 style and numeric style
+  const canonicalLabel = label.startsWith('F') ? label : `F${label}`;
+  let figure = await dbGet(
+    'SELECT * FROM document_figures WHERE document_id = ? AND label = ?',
+    [documentId, canonicalLabel]
+  );
+  if (!figure) {
+    // Fallback for older data with different label format
+    figure = await dbGet(
+      'SELECT * FROM document_figures WHERE document_id = ? AND (label LIKE ? OR label LIKE ?) LIMIT 1',
+      [documentId, `%${label}%`, `%Figure ${label}%`]
+    );
+  }
+  return figure;
+}
+
+async function createFigure(data) {
+  const id = uuidv4();
+  const now = Date.now();
+  await dbRun(
+    `INSERT INTO document_figures (id, document_id, label, caption, page_number, image_index, file_name, file_path, file_size, width, height, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [id, data.documentId, data.label, data.caption, data.pageNumber, data.imageIndex, data.fileName, data.filePath, data.fileSize, data.width, data.height, now]
+  );
+  return await dbGet('SELECT * FROM document_figures WHERE id = ?', [id]);
+}
+
+async function getMessages(sessionId) {
+  return await dbAll('SELECT * FROM messages WHERE session_id = ? ORDER BY created_at ASC', [sessionId]);
+}
+
+async function getDocuments(sessionId) {
+  return await dbAll('SELECT * FROM documents WHERE session_id = ? ORDER BY uploaded_at ASC', [sessionId]);
+}
+
+async function updateDocumentParseMode(documentId, parseMode, markdownContent) {
+  await dbRun(
+    'UPDATE documents SET parse_mode = ?, markdown_content = ? WHERE id = ?',
+    [parseMode, markdownContent, documentId]
+  );
+}
+
 module.exports = {
   db,
   dbGet,
@@ -371,5 +448,15 @@ module.exports = {
   getCommunitySettings,
   updateCommunitySettings,
   getPublicSessions,
-  toggleSessionPublic
+  toggleSessionPublic,
+  incrementViewCount,
+  incrementCopyCount,
+  updateAnalysisStatus,
+  getDocumentFigures,
+  getFigure,
+  getFigureByLabel,
+  createFigure,
+  getMessages,
+  getDocuments,
+  updateDocumentParseMode
 };

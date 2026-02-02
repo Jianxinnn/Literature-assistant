@@ -220,12 +220,48 @@ app.get('/api/community/sessions', optionalAuth, async (req, res) => {
   }
 });
 
-// MinerU status (placeholder - actual service would need to be configured)
+// Get single figure by ID (for image rendering)
+app.get('/api/figures/:figureId', authenticate, async (req, res) => {
+  try {
+    const figure = await db.getFigure(req.params.figureId);
+    if (!figure) {
+      return res.status(404).json({ error: 'Figure not found' });
+    }
+
+    const fs = require('fs');
+    if (!fs.existsSync(figure.file_path)) {
+      return res.status(404).json({ error: 'Image file not found' });
+    }
+
+    const ext = path.extname(figure.file_name).toLowerCase();
+    const mimeTypes = {
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+      '.gif': 'image/gif',
+      '.webp': 'image/webp'
+    };
+
+    res.setHeader('Content-Type', mimeTypes[ext] || 'image/jpeg');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+
+    const stream = fs.createReadStream(figure.file_path);
+    stream.pipe(res);
+  } catch (error) {
+    console.error('Get figure error:', error);
+    res.status(500).json({ error: 'Failed to get figure' });
+  }
+});
+
+// MinerU status
 app.get('/api/mineru/status', authenticate, (req, res) => {
-  const available = !!process.env.MINERU_API_TOKEN;
+  const { mineruService } = require('./lib/mineru-service');
+  const available = mineruService?.isAvailable() || false;
   res.json({
     available,
-    message: available ? 'MinerU service available' : 'MinerU service not configured'
+    message: available
+      ? 'MinerU 服务可用'
+      : '请配置 MINERU_API_TOKEN 环境变量以启用图文解析功能'
   });
 });
 

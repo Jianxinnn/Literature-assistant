@@ -1,50 +1,201 @@
 {
-  "defaultProvider": "gemini-2.5-pro",
-  "assistantDefaultProvider": "gemini-2.5-pro",
+  "defaultProvider": "gemini-3-pro-preview",
+  "assistantDefaultProvider": "gemini-3-pro-preview",
+  "_comment": "baseUrl 支持两种配置方式: 1) 直接写 URL; 2) 使用 baseUrlEnv 指定环境变量名(优先级更高)",
   "providers": {
-    "gemini-2.5-pro": {
-      "name": "Gemini 2.5 Pro",
-      "baseUrlEnv": "GEMINI_BASE_URL",
-      "apiKeyEnv": "GEMINI_API_KEY",
-      "baseUrl": "https://generativelanguage.googleapis.com/v1beta/chat/completions",
-      "model": "gemini-2.5-pro",
+    "qwen3-coder-480B": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "qwen3-coder-480b",
       "temperature": 0.7,
+      "maxTokens": 128000,
+      "multimodal": false,
+      "enabled": true
+    },
+    "glm-4.7": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "glm4.7",
+      "temperature": 0.7,
+      "maxTokens": 128000,
+      "multimodal": true,
+      "enabled": true
+    },
+    "kimi-k2.5": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "kimi-k2.5",
+      "temperature": 0.7,
+      "maxTokens": 128000,
+      "multimodal": true,
+      "enabled": true
+    },
+    "deepseek-v3.2": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "deepseek-v3.2",
+      "temperature": 0.7,
+      "maxTokens": 128000,
+      "multimodal": false,
+      "enabled": true
+    },
+    "kimi-k2-thinking": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "kimi-k2-thinking",
+      "temperature": 0.7,
+      "maxTokens": 128000,
+      "multimodal": false,
+      "enabled": true
+    },
+    "deepseek-r1": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "deepseek-r1",
+      "temperature": 0.7,
+      "maxTokens": 12800,
+      "multimodal": false,
+      "enabled": true
+    },
+    "gemini-2.5-pro": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "gemini-2.5-pro",
       "maxTokens": 32000,
       "multimodal": true,
       "enabled": true
     },
-    "gpt-4o": {
-      "name": "GPT-4o",
-      "baseUrlEnv": "OPENAI_BASE_URL",
-      "apiKeyEnv": "OPENAI_API_KEY",
-      "baseUrl": "https://api.openai.com/v1/chat/completions",
-      "model": "gpt-4o",
-      "temperature": 0.7,
-      "maxTokens": 16000,
+    "gemini-3-pro-preview": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "gemini-3-pro-preview",
+      "maxTokens": 32000,
       "multimodal": true,
-      "enabled": false
-    },
-    "deepseek-v3": {
-      "name": "DeepSeek V3",
-      "baseUrlEnv": "DEEPSEEK_BASE_URL",
-      "apiKeyEnv": "DEEPSEEK_API_KEY",
-      "baseUrl": "https://api.deepseek.com/v1/chat/completions",
-      "model": "deepseek-chat",
-      "temperature": 0.7,
-      "maxTokens": 8000,
-      "multimodal": false,
       "enabled": true
     },
-    "claude-3-opus": {
-      "name": "Claude 3 Opus",
-      "baseUrlEnv": "ANTHROPIC_BASE_URL",
-      "apiKeyEnv": "ANTHROPIC_API_KEY",
-      "baseUrl": "https://api.anthropic.com/v1/messages",
-      "model": "claude-3-opus-20240229",
-      "temperature": 0.7,
-      "maxTokens": 4096,
+    "gemini-3-pro-high": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "gemini-3-pro-high",
+      "maxTokens": 32000,
+      "multimodal": true,
+      "enabled": true
+    },
+    "gemini-3-flash-preview": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "gemini-3-flash-preview",
+      "maxTokens": 32000,
+      "multimodal": true,
+      "enabled": true
+    },
+    "minimax-m2.1": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "minimax-m2.1",
+      "maxTokens": 32000,
+      "multimodal": true,
+      "enabled": true
+    },
+    "claude-sonnet-4-5": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "claude-sonnet-4-5",
+      "maxTokens": 32000,
       "multimodal": true,
       "enabled": false
+    },
+    "claude-opus-4-5-thinking": {
+      "name": "X666",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "X666_API_KEY",
+      "model": "claude-opus-4-5-thinking",
+      "maxTokens": 32000,
+      "multimodal": true,
+      "enabled": false
+    },
+    "gpt-5-nano": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "gpt-5-nano",
+      "maxTokens": 36000,
+      "multimodal": true,
+      "enabled": true
+    },
+    "gpt-4.1-mini": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "gpt-4.1-mini",
+      "maxTokens": 36000,
+      "multimodal": true,
+      "enabled": true
+    },
+    "gpt-5.2-codex-xhigh": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "gpt-5.2-xhigh",
+      "maxTokens": 128000,
+      "multimodal": true,
+      "enabled": true
+    },
+    "gpt-5.2-codex-high": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "gpt-5.2-codex-high",
+      "maxTokens": 128000,
+      "multimodal": true,
+      "enabled": true
+    },
+    "gpt-5.2-high": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "gpt-5.2-high",
+      "maxTokens": 128000,
+      "multimodal": true,
+      "enabled": true
+    },
+    "gpt-5.2-xhigh": {
+      "name": "JXTANG",
+      "baseUrlEnv": "JXTANG_BASE_URL",
+      "apiKeyEnv": "JXTANG_API_KEY",
+      "model": "gpt-5.2-xhigh",
+      "maxTokens": 128000,
+      "multimodal": true,
+      "enabled": true
     }
+  },
+  "upload": {
+    "maxFileSizeMB": 150,
+    "allowedMimeTypes": ["application/pdf"],
+    "allowedExtensions": [".pdf"],
+    "cleanupAfterDays": 90
+  },
+  "session": {
+    "autoTitleLength": 50,
+    "maxMessagesPerSession": 100,
+    "defaultPageSize": 20
+  },
+  "imageMode": {
+    "enabled": true,
+    "maxFiguresPerAnalysis": 8,
+    "maxImageSize": 1024,
+    "supportedProviders": ["gemini-3-flash-preview"]
   }
 }
