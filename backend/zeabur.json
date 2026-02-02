@@ -1,0 +1,13 @@
+{
+  "$schema": "https://zeabur.com/schema/zeabur-config.json",
+  "build": {
+    "type": "nodejs"
+  },
+  "start": {
+    "command": "node server.js"
+  },
+  "env": {
+    "NODE_ENV": "production",
+    "PORT": "3000"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://zeabur.com/schema/zeabur-config.json",
+  "build": {
+    "type": "static",
+    "output_dir": "dist"
+  },
+  "routes": [
+    {
+      "path": "/api/*",
+      "rewrite": "${BACKEND_URL}/api/*"
+    }
+  ]
+}

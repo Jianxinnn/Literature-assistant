@@ -1,0 +1,50 @@
+{
+  "defaultProvider": "gemini-2.5-pro",
+  "assistantDefaultProvider": "gemini-2.5-pro",
+  "providers": {
+    "gemini-2.5-pro": {
+      "name": "Gemini 2.5 Pro",
+      "baseUrlEnv": "GEMINI_BASE_URL",
+      "apiKeyEnv": "GEMINI_API_KEY",
+      "baseUrl": "https://generativelanguage.googleapis.com/v1beta/chat/completions",
+      "model": "gemini-2.5-pro",
+      "temperature": 0.7,
+      "maxTokens": 32000,
+      "multimodal": true,
+      "enabled": true
+    },
+    "gpt-4o": {
+      "name": "GPT-4o",
+      "baseUrlEnv": "OPENAI_BASE_URL",
+      "apiKeyEnv": "OPENAI_API_KEY",
+      "baseUrl": "https://api.openai.com/v1/chat/completions",
+      "model": "gpt-4o",
+      "temperature": 0.7,
+      "maxTokens": 16000,
+      "multimodal": true,
+      "enabled": false
+    },
+    "deepseek-v3": {
+      "name": "DeepSeek V3",
+      "baseUrlEnv": "DEEPSEEK_BASE_URL",
+      "apiKeyEnv": "DEEPSEEK_API_KEY",
+      "baseUrl": "https://api.deepseek.com/v1/chat/completions",
+      "model": "deepseek-chat",
+      "temperature": 0.7,
+      "maxTokens": 8000,
+      "multimodal": false,
+      "enabled": true
+    },
+    "claude-3-opus": {
+      "name": "Claude 3 Opus",
+      "baseUrlEnv": "ANTHROPIC_BASE_URL",
+      "apiKeyEnv": "ANTHROPIC_API_KEY",
+      "baseUrl": "https://api.anthropic.com/v1/messages",
+      "model": "claude-3-opus-20240229",
+      "temperature": 0.7,
+      "maxTokens": 4096,
+      "multimodal": true,
+      "enabled": false
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "literature-assistant-standalone",
+  "version": "1.0.0",
+  "description": "AI-powered scientific literature analysis assistant",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm start",
+    "setup": "npm install && npm run setup:backend && npm run setup:frontend",
+    "setup:backend": "cd backend && npm install",
+    "setup:frontend": "cd frontend && npm install",
+    "clean": "rm -rf frontend/node_modules backend/node_modules frontend/dist"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "keywords": [
+    "literature",
+    "ai",
+    "pdf",
+    "research",
+    "analysis"
+  ],
+  "author": "",
+  "license": "MIT"
+}

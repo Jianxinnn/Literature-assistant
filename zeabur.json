@@ -1,0 +1,14 @@
+{
+  "$schema": "https://zeabur.com/schema/zeabur-config.json",
+  "build": {
+    "type": "dockerfile",
+    "dockerfile": "docker/Dockerfile"
+  },
+  "start": {
+    "command": "node backend/server.js"
+  },
+  "env": {
+    "NODE_ENV": "production",
+    "PORT": "3000"
+  }
+}
